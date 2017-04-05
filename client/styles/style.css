@@ -1,0 +1,56 @@
+body {
+  background-image: url('./../img/back.png'); 
+  color: navajowhite;
+  font-family: "helvetica neue";
+  font-size: 20px;
+  font-style: italic;
+}
+.table {
+  display: block;
+  position: relative;
+  margin-top: 75px;
+  text-align: center;
+}
+.hand {
+  display: block;
+  position: relative;
+  margin-top: 125px;
+  margin-bottom: 200px;
+  text-align: center;
+}
+
+p {
+  display: fixed;
+  bottom: 0px;
+  left: 20px;
+}
+
+button {
+  width: auto;
+  height: auto;
+  font-family: "helvetica neue";
+  font-size: 16px;
+  margin: 0 10px 0 0;
+  padding: 6px 15px;
+  border-radius: 2px;
+  border: 0px;
+  outline: none;
+  background-color:lightcyan;
+  display: inline-block
+}
+
+#login {
+  text-align: center;
+  width: 300px;
+  margin: 150 auto 500 auto;
+}
+
+input {
+  display: block;
+  font-size: 16pt;
+  padding-left: 6px;
+  margin-left: 32px;
+  margin-bottom: 10px
+  
+}
+
