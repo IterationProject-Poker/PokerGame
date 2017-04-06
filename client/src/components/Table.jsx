@@ -24,7 +24,9 @@ const Table = (props) => {
         return (<div className="table">
           {JSON.stringify(props.winMessage)}
           <CommunityCards deck={props.deck} round={props.round} />
-          <div>{props.opponent}'s Hand: <img src={urls[0]}></img> <img src={urls[1]}></img> </div>
+          <div>{props.opponent}'s Hand:</div>
+          <div> <img src={urls[0]}></img> <img src={urls[1]}></img> </div>
+          <button onClick={() => console.log("Congrats!  You clicked a button!")} >Play Again!</button>
         </div>
         )
       } else if (props.amDealer === false) {
@@ -42,7 +44,9 @@ const Table = (props) => {
         return (<div className="table">
           {JSON.stringify(props.winMessage)}
           <CommunityCards deck={props.deck} round={props.round} />
-          <div>{props.opponent}'s Hand: <img src={urls[0]}></img> <img src={urls[1]}></img></div>
+          <div>{props.opponent}'s Hand:</div>
+          <div> <img src={urls[0]}></img> <img src={urls[1]}></img></div>
+          <button onClick={() => console.log("Congrats!  You clicked a button!")} >Play Again!</button>
         </div>
         )
       }
@@ -51,11 +55,10 @@ const Table = (props) => {
       return (
         <div className="table">
           <CommunityCards deck={props.deck} round={props.round} />
+          <div>
+            {props.readyMessage}
+          </div>
           <button onClick={() => props.socket.send(JSON.stringify({ action: 'ready', username: props.username }))}>Ready!!!</button>
-          {/*<button onClick={() => { handleFoldButton(); }} type="button" className="btn-fold">Fold</button>
-          <button onClick={() => { handleCheckButton(); }} type="button" className="btn-check">Check</button>
-          <button onClick={() => { handleCallButton(); }} type="button" className="btn-call">Call</button>
-          <button onClick={() => { handleBetButton(); }} type="button" className="btn-bet">Bet</button>*/}
         </div>
       )
     }

@@ -11,9 +11,10 @@ function getInitialState(){
     gameReady: false,
     hand: '',
     amDealer: null,
-    playerTurn: null,
     winMessage: null,
     opponent: null,
+    balance: null,
+    readyMessage: null,
   };
 }
 
@@ -22,6 +23,10 @@ class App extends Component {
     super(props);
     this.state = getInitialState();
     this.loginClick = this.loginClick.bind(this);
+  }
+
+  stateSet(state) {
+    this.setState(state);
   }
 
   loginClick(type) {
@@ -64,7 +69,7 @@ class App extends Component {
     if (this.state.view === 'login') {
       jsx = <Login loginClick={this.loginClick.bind(this)} />
     } else if (this.state.view === 'lobby') {
-      jsx = <Lobby state = {this.state} setSt = {(state) => {this.setState(state)}} /> 
+      jsx = <Lobby state = {this.state} setSt = {this.stateSet.bind(this)} /> 
     }
     return (
       <div>

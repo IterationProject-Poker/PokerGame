@@ -3,6 +3,7 @@ const User = require('../../models/User.js');
 
 
 mongoose.connect('mongodb://localhost/poker-game');
+// mongoose.connect('mongodb://getmorejackets:bitchfuck1@ds137110.mlab.com:37110/getmorejacket');
 
 const UserController = {
   createUser: (req, res, next) => {

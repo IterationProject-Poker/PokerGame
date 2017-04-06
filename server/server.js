@@ -60,10 +60,16 @@ socket.on('connection', (client) => {
     const clientArr = Object.keys(clients.clientList);
     if ((pMsg.action === 'createGame' || pMsg.action === 'joinGame') && clientArr.length === 2) hand = gameController.createHand(clientArr[0]);
     if (pMsg.action === 'ready') {
-      clients.clientList[pMsg.username].ready = true;
-      console.log('you pressed the button and I toooootally heard it');
+      const player = clients.clientList[pMsg.username];
+      player.ready = true;
+      clientArr.forEach((key, index) => {
+        readyMessage = `${pMsg.username} is ready!`
+        clients.clientList[key].client.send(JSON.stringify({ action: 'ok', readyMessage }))
+      });
+      
+      console.log('you pressed the ready button!');
       if (clients.clientList[clientArr[0]].ready && clients.clientList[clientArr[1]].ready) {
-        console.log('shit yea two clients are ready!');
+        console.log('two clients are ready!');
         hand.currentRound += 1;
         clients.clientList[clientArr[0]].ready = false;
         clients.clientList[clientArr[1]].ready = false;
@@ -78,7 +84,7 @@ socket.on('connection', (client) => {
             winMessage = `${clientArr[1]} wins with a ${handTypes[hand.opponentHand[0]]}!`
           }
           else {
-            winMessage = `Tie! It's a split pot mofossss`;
+            winMessage = `It's a tie! Players split the pot!`;
           }
         }
       
@@ -101,7 +107,7 @@ socket.on('connection', (client) => {
         clients.clientList[key].client.send(JSON.stringify({ action: 'GameReady' }));
         console.log('round ', hand.currentRound);
         if (pMsg.action === 'createGame' || pMsg.action === 'joinGame') {
-          clients.clientList[key].client.send(JSON.stringify({ action: 'hand', hand, amDealer: index === 0, playerTurn: clientArr[1] }));
+          clients.clientList[key].client.send(JSON.stringify({ action: 'hand', hand, amDealer: index === 0 }));
         } else {
           clients.clientList[key].client.send(JSON.stringify({ action: 'hand', hand, amDealer: index === 0 }));
         }
@@ -111,7 +117,7 @@ socket.on('connection', (client) => {
 });
 
 
-app.listen(3000, () => console.log('Listening on port 3000'));
+app.listen(3000, '0.0.0.0', () => console.log('Listening on port 3000'));
 
 
 

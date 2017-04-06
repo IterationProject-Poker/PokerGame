@@ -28,7 +28,7 @@ class Room extends Component {
 
     return (
       <div>
-        <Table winMessage={this.props.winMessage} opponent={this.props.opponent} deck={this.props.hand.deck} round={this.props.hand.currentRound} 
+        <Table winMessage={this.props.winMessage} readyMessage={this.props.readyMessage} opponent={this.props.opponent} deck={this.props.hand.deck} round={this.props.hand.currentRound} 
         socket={this.props.socket} username={this.props.username} amDealer={this.props.amDealer} />
         <Hand deck={this.props.hand.deck} amDealer={this.props.amDealer} />
       </div>

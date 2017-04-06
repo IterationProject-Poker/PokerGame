@@ -8,7 +8,8 @@ class Lobby extends Component {
     this.lobbySwitch = this.lobbySwitch.bind(this);
   }
   createGame() {
-    const socket = new WebSocket('ws://localhost:8080/');
+    const hostIP = '192.168.0.97';  //Change if hosting on different computer
+    const socket = new WebSocket(`ws://${hostIP}:8080/`);
     let that = this;
     socket.onopen = () => { 
       console.log('Socket open'); 
@@ -26,13 +27,14 @@ class Lobby extends Component {
         this.props.setSt({ 
           hand: pMsg.hand,
           amDealer: pMsg.amDealer,
-          playerTurn: pMsg.playerTurn,
         }); 
       };
+      if (pMsg.action === 'ok') this.props.setSt( { readyMessage: pMsg.readyMessage } )
       if (pMsg.action === "win") this.props.setSt( { winMessage: pMsg.winMessage, opponent: pMsg.opponent } );
     }
     socket.onclose = () => console.log('Socket closed');
     this.props.setSt({ socket: socket });
+    console.log("Socket:", socket);
   }
   lobbySwitch() {
     console.log('message for room', this.props.state.message)
@@ -42,9 +44,8 @@ class Lobby extends Component {
     }
     if (this.props.state.socket !== 0 && this.props.state.gameReady === true) {
       return (
-        //<div>Card Game</div> // this.props.socket
-        <div>
-          <Room winMessage = {this.props.state.winMessage} opponent={this.props.state.opponent} hand = {this.props.state.hand} amDealer = {this.props.state.amDealer} socket={this.props.state.socket} username = {this.props.state.username} /> 
+        <div className>
+          <Room winMessage = {this.props.state.winMessage} readyMessage={this.props.state.readyMessage} opponent={this.props.state.opponent} hand = {this.props.state.hand} amDealer = {this.props.state.amDealer} socket={this.props.state.socket} username = {this.props.state.username} /> 
           <p id = 'title'> Poker by Ryan, Will, and Matt - Updated by Glenn, Masaya, and Jelena</p>
         </div>
       )
@@ -52,7 +53,6 @@ class Lobby extends Component {
       return (
         <div id="lobby">
           <button onClick={this.createGame}>Join Game</button>
-          {/*<button onClick={this.joinGame}>Join Game</button>*/}
         </div>
       )
     }
