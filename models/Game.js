@@ -3,6 +3,8 @@ const Schema = mongoose.Schema;
 const autoIncrement = require('mongoose-auto-increment');
 
 var connection = mongoose.createConnection("mongodb://localhost/poker-game");
+// var connection = mongoose.createConnection('mongodb://getmorejackets:bitchfuck1@ds137110.mlab.com:37110/getmorejacket');
+
 autoIncrement.initialize(connection);
 
 const gameSchema = new Schema({

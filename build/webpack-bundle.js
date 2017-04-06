@@ -21541,9 +21541,10 @@
 	    gameReady: false,
 	    hand: '',
 	    amDealer: null,
-	    playerTurn: null,
 	    winMessage: null,
-	    opponent: null
+	    opponent: null,
+	    balance: null,
+	    readyMessage: null
 	  };
 	}
 
@@ -21561,6 +21562,11 @@
 	  }
 
 	  _createClass(App, [{
+	    key: 'stateSet',
+	    value: function stateSet(state) {
+	      this.setState(state);
+	    }
+	  }, {
 	    key: 'loginClick',
 	    value: function loginClick(type) {
 	      var username = document.getElementById('username').value;
@@ -21597,16 +21603,12 @@
 	  }, {
 	    key: 'render',
 	    value: function render() {
-	      var _this2 = this;
-
 	      //console.log('app render ', this.state.username);
 	      var jsx = void 0;
 	      if (this.state.view === 'login') {
 	        jsx = _react2.default.createElement(_Login2.default, { loginClick: this.loginClick.bind(this) });
 	      } else if (this.state.view === 'lobby') {
-	        jsx = _react2.default.createElement(_Lobby2.default, { state: this.state, setSt: function setSt(state) {
-	            _this2.setState(state);
-	          } });
+	        jsx = _react2.default.createElement(_Lobby2.default, { state: this.state, setSt: this.stateSet.bind(this) });
 	      }
 	      return _react2.default.createElement(
 	        'div',
@@ -21721,7 +21723,8 @@
 	    value: function createGame() {
 	      var _this2 = this;
 
-	      var socket = new WebSocket('ws://localhost:8080/');
+	      var hostIP = '192.168.0.97'; //Change if hosting on different computer
+	      var socket = new WebSocket('ws://' + hostIP + ':8080/');
 	      var that = this;
 	      socket.onopen = function () {
 	        console.log('Socket open');
@@ -21738,16 +21741,17 @@
 	        if (pMsg.action === "hand") {
 	          _this2.props.setSt({
 	            hand: pMsg.hand,
-	            amDealer: pMsg.amDealer,
-	            playerTurn: pMsg.playerTurn
+	            amDealer: pMsg.amDealer
 	          });
 	        };
+	        if (pMsg.action === 'ok') _this2.props.setSt({ readyMessage: pMsg.readyMessage });
 	        if (pMsg.action === "win") _this2.props.setSt({ winMessage: pMsg.winMessage, opponent: pMsg.opponent });
 	      };
 	      socket.onclose = function () {
 	        return console.log('Socket closed');
 	      };
 	      this.props.setSt({ socket: socket });
+	      console.log("Socket:", socket);
 	    }
 	  }, {
 	    key: 'lobbySwitch',
@@ -21762,17 +21766,14 @@
 	        );
 	      }
 	      if (this.props.state.socket !== 0 && this.props.state.gameReady === true) {
-	        return (
-	          //<div>Card Game</div> // this.props.socket
+	        return _react2.default.createElement(
+	          'div',
+	          { className: true },
+	          _react2.default.createElement(_Room2.default, { winMessage: this.props.state.winMessage, readyMessage: this.props.state.readyMessage, opponent: this.props.state.opponent, hand: this.props.state.hand, amDealer: this.props.state.amDealer, socket: this.props.state.socket, username: this.props.state.username }),
 	          _react2.default.createElement(
-	            'div',
-	            null,
-	            _react2.default.createElement(_Room2.default, { winMessage: this.props.state.winMessage, opponent: this.props.state.opponent, hand: this.props.state.hand, amDealer: this.props.state.amDealer, socket: this.props.state.socket, username: this.props.state.username }),
-	            _react2.default.createElement(
-	              'p',
-	              { id: 'title' },
-	              ' Poker by Ryan, Will, and Matt - Updated by Glenn, Masaya, and Jelena'
-	            )
+	            'p',
+	            { id: 'title' },
+	            ' Poker by Ryan, Will, and Matt - Updated by Glenn, Masaya, and Jelena'
 	          )
 	        );
 	      } else {
@@ -21869,7 +21870,7 @@
 	      return _react2.default.createElement(
 	        'div',
 	        null,
-	        _react2.default.createElement(_Table2.default, { winMessage: this.props.winMessage, opponent: this.props.opponent, deck: this.props.hand.deck, round: this.props.hand.currentRound,
+	        _react2.default.createElement(_Table2.default, { winMessage: this.props.winMessage, readyMessage: this.props.readyMessage, opponent: this.props.opponent, deck: this.props.hand.deck, round: this.props.hand.currentRound,
 	          socket: this.props.socket, username: this.props.username, amDealer: this.props.amDealer }),
 	        _react2.default.createElement(_Hand2.default, { deck: this.props.hand.deck, amDealer: this.props.amDealer })
 	      );
@@ -21954,7 +21955,7 @@
 	  if (myValue === 14) myValue = 1;
 	  var cardName = mySuit + myValue;
 
-	  console.log('props.val', props.val, 'cardName:', cardName);
+	  // console.log('props.val', props.val, 'cardName:', cardName)
 
 	  var url = props.hidden ? './static/client/img/hidden.png' : './static/client/img/' + cardName + '.png';
 
@@ -22022,11 +22023,23 @@
 	            'div',
 	            null,
 	            props.opponent,
-	            '\'s Hand: ',
+	            '\'s Hand:'
+	          ),
+	          _react2.default.createElement(
+	            'div',
+	            null,
+	            ' ',
 	            _react2.default.createElement('img', { src: urls[0] }),
 	            ' ',
 	            _react2.default.createElement('img', { src: urls[1] }),
 	            ' '
+	          ),
+	          _react2.default.createElement(
+	            'button',
+	            { onClick: function onClick() {
+	                return console.log("Congrats!  You clicked a button!");
+	              } },
+	            'Play Again!'
 	          )
 	        );
 	      } else if (props.amDealer === false) {
@@ -22050,10 +22063,22 @@
 	            'div',
 	            null,
 	            props.opponent,
-	            '\'s Hand: ',
+	            '\'s Hand:'
+	          ),
+	          _react2.default.createElement(
+	            'div',
+	            null,
+	            ' ',
 	            _react2.default.createElement('img', { src: _urls[0] }),
 	            ' ',
 	            _react2.default.createElement('img', { src: _urls[1] })
+	          ),
+	          _react2.default.createElement(
+	            'button',
+	            { onClick: function onClick() {
+	                return console.log("Congrats!  You clicked a button!");
+	              } },
+	            'Play Again!'
 	          )
 	        );
 	      }
@@ -22062,6 +22087,11 @@
 	        'div',
 	        { className: 'table' },
 	        _react2.default.createElement(_CommunityCards2.default, { deck: props.deck, round: props.round }),
+	        _react2.default.createElement(
+	          'div',
+	          null,
+	          props.readyMessage
+	        ),
 	        _react2.default.createElement(
 	          'button',
 	          { onClick: function onClick() {
